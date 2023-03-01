@@ -15,9 +15,6 @@ const bcryptjs = require('bcryptjs');
 const passwordValidator = require('password-validator');
 const generateApiKey = require('generate-api-key').default;
 const containsEmoji = require('contains-emoji');
-const Recaptcha = require('express-recaptcha').RecaptchaV2;
-const recaptcha = new Recaptcha(recaptcha_key_1, recaptcha_key_2);
-
 //_______________________ ┏ Function ┓ _______________________\\
 
 
@@ -31,60 +28,22 @@ function checkAuth(req, res, next) {
     }
 }
 
- function captchaForgotPassword(req, res, next) {
-    if (req.recaptcha.error) {
-        req.flash('error_messages','reCAPTCHA Tidak Valid');
-        res.redirect('/forgot-password');
-    } else {
-        return next();
-   }
-}
-
-function captchaResetPassword(req, res, next) {
-    const { token } = req.body;
-    if (req.recaptcha.error) {
-        req.flash('error_messages','reCAPTCHA Tidak Valid');
-        res.redirect(`/reset-password?token=${token}`);
-    } else {
-        return next();
-   }
-}
-
-function captchaRegister(req, res, next) {
-    if (req.recaptcha.error) {
-        req.flash('error_messages','reCAPTCHA Tidak Valid');
-        res.redirect('/signup');
-    } else {
-        return next();
-   }
-}
-
- function captchaLogin(req, res, next) {
-    if (req.recaptcha.error) {
-        req.flash('error_messages','reCAPTCHA Tidak Valid');
-        res.redirect('/login');
-    } else {
-        return next();
-    }
- }
-
 //_______________________ ┏ Router ┓ _______________________\\
 
 
-router.get('/login', recaptcha.middleware.render, (req, res) => {
+router.get('/login', (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect("/docs");
     } else {
         res.render("login", { 
-            csrfToken: req.csrfToken(),
-            recaptcha: res.recaptcha
+            csrfToken: req.csrfToken()
         });
     }
     
 });
 
 
-router.post('/login', recaptcha.middleware.verify, captchaLogin, (req, res, next) => {
+router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         failureRedirect: '/login',
         successRedirect: '/docs',
@@ -92,18 +51,17 @@ router.post('/login', recaptcha.middleware.verify, captchaLogin, (req, res, next
     })(req, res, next);
 });
 
-router.get('/signup', recaptcha.middleware.render, (req, res) => {
+router.get('/signup', (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect("/docs");
     } else {
         res.render("signup", { 
-            csrfToken: req.csrfToken(),
-            recaptcha: res.recaptcha
+            csrfToken: req.csrfToken()
          });
     }
 });
 
-router.post('/signup', recaptcha.middleware.verify, captchaRegister, async(req, res) => {
+router.post('/signup', async(req, res) => {
     const { email, username, password, confirmpassword } = req.body;
     var createpw = new passwordValidator();
     createpw.is().min(8).is().max(30).has().uppercase().has().lowercase().has().digits().has().not().spaces().is().not().oneOf(['Passw0rd', 'Password123']);
@@ -224,15 +182,14 @@ router.get('/verifyemail', async (req, res) => {
     }
 });
 
-router.get('/forgot-password', recaptcha.middleware.render, async (req, res) => {
+router.get('/forgot-password', async (req, res) => {
     res.render('forgot-password.ejs',  { 
-        csrfToken: req.csrfToken(),
-        recaptcha: res.recaptcha
+        csrfToken: req.csrfToken()
      });
 
 });
 
-router.post('/forgot-password', recaptcha.middleware.verify, captchaForgotPassword, async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
 	if (!email ) {
@@ -266,7 +223,7 @@ if (Cooldown) {
     }
 });
 
-router.get('/reset-password', recaptcha.middleware.render, async (req, res) => {
+router.get('/reset-password', async (req, res) => {
     const token = req.query.token;
 
     if (token) {
@@ -274,7 +231,6 @@ router.get('/reset-password', recaptcha.middleware.render, async (req, res) => {
         if (check) {
             res.render('forgot-password.ejs',  { 
                 csrfToken: req.csrfToken(),
-                recaptcha: res.recaptcha,
                 reset: true,
                 email: check.email,
                 token: token
@@ -290,7 +246,7 @@ router.get('/reset-password', recaptcha.middleware.render, async (req, res) => {
 });
 
 
-router.post('/reset-password', recaptcha.middleware.verify, captchaResetPassword, async (req, res) => {
+router.post('/reset-password', async (req, res) => {
     const { password, confirmpassword, email, token } = req.body;
     var resetpw = new passwordValidator();
 resetpw
