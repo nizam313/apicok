@@ -3,7 +3,7 @@ require('dotenv').config()
 
 //_______________________ ┏  Info  ┓ _______________________\\
 //
-//   Credit : AlipBot
+//   Credit : NezaFvnky
 //   
 //   Note 
 //   Jangan Jual SC ini ,
@@ -19,13 +19,13 @@ require('dotenv').config()
 
 //_______________________ ┏  Main Setting  ┓ _______________________\\
 
-creator = 'Cishop-FG' // Nama 
+creator = 'NezaFvnky' // Nama 
 port = 8080 //port host
 LimitApikey = 20 // Limit Apikey default
 
 //___________ ┏  Database Mongodb Setting  ┓ ___________\\
 
-keymongodb = process.env.mongodb //example "mongodb+srv://user:password@name_database.mongodb.net/?retryWrites=true&w=majority";
+keymongodb = process.env.mongodb //example "mongodb+srv://jjy1203:aOr8RO9whk2teV9I@apineza.sy8jz.mongodb.net/?retryWrites=true&w=majority&appName=apineza";
 
 //___________ ┏  SMTP Setting  ┓ ___________\\
 
@@ -35,7 +35,7 @@ servicesmtp = 'Gmail'//Ada gmail ada sendinblue ikut masing2 limit gmail 500 lim
 sendemail = process.env.sendemail //Email SMTP
 fromsendemail = process.env.fromsendemail // From Email SMTP *kalau takde custom email kena sama email dengan Email SMTP
 sendpwmail = process.env.sendpwmail // Password Email SMTP
-domain = 'app.cishop.live'// domain website tanpa http or https
+domain = 'api.nezastore.id'// domain website tanpa http or https
 
 //_______________________ ┏  Apikey  ┓ _______________________\\
 
